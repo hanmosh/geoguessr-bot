@@ -1,0 +1,125 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Machine Learning / Data Science
+# Model files
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.ckpt
+*.pkl
+*.pickle
+*.joblib
+*.model
+*.weights
+*.pb
+*.onnx
+*.tflite
+
+# Logs and outputs
+logs/
+*.log
+tensorboard/
+wandb/
+mlruns/
+outputs/
+results/
+checkpoints/
+runs/
+
+# Data directories (large datasets)
+compressed_dataset/
+train/
+val/
+test/
+data/
+datasets/
+*.csv
+*.tsv
+*.parquet
+*.feather
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.cache/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
