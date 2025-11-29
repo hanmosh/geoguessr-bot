@@ -31,7 +31,8 @@ for country in tqdm(list(source_root.iterdir()), desc="Filtering countries..."):
         try:
             with Image.open(img) as im:
                 w, h = im.size
-            if w == 1030 and h == 1030: # skip images that have dimensions 1030x1030 (minority)
+            if w == 1030 and h == 703: # skip images that have dimensions 1030x703 (minority)
+                print(f"skipping image from {country.name}")
                 continue
             valid_images.append(img)
         except:
