@@ -37,7 +37,7 @@ for country in tqdm(list(source_root.iterdir()), desc="Filtering countries..."):
             valid_images.append(img)
         except:
             continue
-    if len(valid_images) <= 1: # skip countries with 1 or fewer images
+    if len(valid_images) <= 1000: # skip countries with 1000 or fewer images
         continue
     countries[country.name] = valid_images
 
