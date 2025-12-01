@@ -5,7 +5,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from tqdm.auto import tqdm  
+from tqdm.auto import tqdm 
+from sklearn.metrics import f1_score 
 
 # expects train and val folders created by 01_split_dataset py
 
@@ -14,7 +15,7 @@ TRAIN_DIR = "train"
 VAL_DIR = "val"
 IMAGE_SIZE = 224
 BATCH_SIZE = 32
-NUM_EPOCHS = 10
+NUM_EPOCHS = 1
 LEARNING_RATE = 1e-4
 PATIENCE = 5  
 CHECKPOINT_PATH = "best_model.pt"
@@ -132,6 +133,9 @@ def train():
         correct = 0
         total = 0
 
+        all_preds = []  
+        all_labels = []
+
         with torch.no_grad():
             for images, labels in tqdm(val_loader, desc="val", leave=False):
                 images = images.to(DEVICE)
@@ -142,29 +146,40 @@ def train():
 
                 total_val_loss += loss.item() * labels.size(0)
                 preds = outputs.argmax(dim=1)
+
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
+
+                all_preds.append(preds)
+                all_labels.append(labels)
 
         avg_val_loss = total_val_loss / len(val_loader.dataset)
         val_accuracy = 100.0 * correct / total
 
+        # compute F1
+        all_preds = torch.cat(all_preds).cpu().numpy()
+        all_labels = torch.cat(all_labels).cpu().numpy()
+        val_f1 = f1_score(all_labels, all_preds, average="macro")
+
         print(
             f"train_loss {avg_train_loss:.4f}  "
             f"val_loss {avg_val_loss:.4f}  "
-            f"val_acc {val_accuracy:.2f}%"
+            f"val_acc {val_accuracy:.2f}%  "
+            f"val_f1 {val_f1:.4f}"
         )
 
+
         # early stopping and checkpoint
-        # if avg_val_loss < best_val_loss:
-        #     best_val_loss = avg_val_loss
-        #     epochs_without_improvement = 0
-        #     torch.save(model.state_dict(), CHECKPOINT_PATH)
-        #     print("saved new best model")
-        # else:
-        #     epochs_without_improvement += 1
-        #     if epochs_without_improvement >= PATIENCE:
-        #         print("early stopping")
-        #         break
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            epochs_without_improvement = 0
+            torch.save(model.state_dict(), CHECKPOINT_PATH)
+            print("saved new best model")
+        else:
+            epochs_without_improvement += 1
+            if epochs_without_improvement >= PATIENCE:
+                print("early stopping")
+                break
 
     print("training finished")
 
