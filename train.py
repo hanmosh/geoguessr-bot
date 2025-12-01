@@ -16,7 +16,7 @@ VAL_DIR = "val"
 IMAGE_SIZE = 224
 BATCH_SIZE = 32
 NUM_EPOCHS = 10
-LEARNING_RATE = 0.01
+LEARNING_RATE = 1e-4
 PATIENCE = 5  
 CHECKPOINT_PATH = "best_model.pt"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -101,7 +101,7 @@ def train():
 
     model = SimpleCNN(num_classes=num_classes).to(DEVICE)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     best_val_loss = float("inf")
     epochs_without_improvement = 0
