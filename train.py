@@ -7,6 +7,8 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from tqdm.auto import tqdm 
 from sklearn.metrics import f1_score 
+from collections import Counter
+import numpy as np
 
 # expects train and val folders created by 01_split_dataset py
 
@@ -92,6 +94,18 @@ def make_dataloaders():
 
     return train_loader, val_loader, train_dataset
 
+def make_weighted_criterion(train_dataset):
+    targets = train_dataset.targets
+    counts = Counter(targets)
+    num_classes = len(train_dataset.classes)
+
+    class_weights = []
+    for c in range(num_classes):
+        class_weights.append(1.0 / counts[c])
+
+    class_weights = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
+    return nn.CrossEntropyLoss(weight=class_weights)
+
 
 def train():
     set_seed(SEED)
@@ -100,7 +114,7 @@ def train():
     num_classes = len(train_dataset.classes)
 
     model = SimpleCNN(num_classes=num_classes).to(DEVICE)
-    criterion = nn.CrossEntropyLoss()
+    criterion = make_weighted_criterion(train_dataset)
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     best_val_loss = float("inf")
