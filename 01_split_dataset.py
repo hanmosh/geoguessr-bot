@@ -41,6 +41,10 @@ for country in tqdm(list(source_root.iterdir()), desc="Filtering countries..."):
         continue
     countries[country.name] = valid_images
 
+# keep top 5 classes
+top_5 = sorted(countries.items(), key=lambda kv: len(kv[1]), reverse=True)[:5]
+countries = dict(top_5)
+
 for country_name, images in tqdm(countries.items(), desc="Creating splits..."):
     random.shuffle(images)
     n = len(images)
