@@ -6,13 +6,13 @@ from sklearn.metrics import f1_score, confusion_matrix, classification_report
 from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
-
-from train import SimpleCNN, IMAGE_SIZE, BATCH_SIZE, DEVICE, CHECKPOINT_PATH
+import sys
+import importlib
 
 TEST_DIR = "test"
 
 
-def make_test_loader():
+def make_test_loader(IMAGE_SIZE, BATCH_SIZE):
     test_transform = transforms.Compose(
         [
             transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
@@ -35,8 +35,15 @@ def make_test_loader():
     return test_loader, test_dataset
 
 
-def evaluate():
-    test_loader, test_dataset = make_test_loader()
+def evaluate(module_name="train1"):
+    train_module = importlib.import_module(module_name)
+    SimpleCNN = train_module.SimpleCNN
+    IMAGE_SIZE = train_module.IMAGE_SIZE
+    BATCH_SIZE = train_module.BATCH_SIZE
+    DEVICE = train_module.DEVICE
+    CHECKPOINT_PATH = train_module.CHECKPOINT_PATH
+
+    test_loader, test_dataset = make_test_loader(IMAGE_SIZE, BATCH_SIZE)
     num_classes = len(test_dataset.classes)
 
     # use the model from train py
@@ -120,4 +127,5 @@ def evaluate():
         plt.show()
 
 if __name__ == "__main__":
-    evaluate()
+    module_name = sys.argv[1] if len(sys.argv) > 1 else "train1"
+    evaluate(module_name)
